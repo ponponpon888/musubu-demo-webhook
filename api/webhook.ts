@@ -163,10 +163,20 @@ async function getAIReply(
   history.push({ role: "user", content: userMessage });
   if (history.length > 20) history.splice(0, 2);
 
+  // 現在日時を動的に注入
+  const now = new Date().toLocaleString("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+  });
+  const systemWithDate = `現在の日時（日本時間）：${now}\n\n${DEMO_SYSTEM_PROMPT}`;
+
   const response = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 600,
-    system: DEMO_SYSTEM_PROMPT,
+    system: systemWithDate,
     messages: history,
   });
 
